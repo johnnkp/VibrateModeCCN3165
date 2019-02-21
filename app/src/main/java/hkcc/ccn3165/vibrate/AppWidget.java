@@ -1,4 +1,4 @@
-package hkcc.ccn3165.vibratemode;
+package hkcc.ccn3165.vibrate;
 
 import android.app.Activity;
 import android.app.IntentService;
@@ -9,6 +9,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 /**
@@ -43,13 +44,23 @@ public class AppWidget extends AppWidgetProvider {
         private RemoteViews buildUpdate(Context context) {
             RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.widget);
             AudioManager audioManager = (AudioManager) context.getSystemService(Activity.AUDIO_SERVICE);
-            if (audioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
-                updateViews.setImageViewResource(R.id.phoneState, R.drawable.phone_state_normal);
-                audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-            } else {
-                updateViews.setImageViewResource(R.id.phoneState, R.drawable.phone_state_vibrate);
-                audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+
+            switch (audioManager.getRingerMode()) {
+                case AudioManager.RINGER_MODE_NORMAL:
+                    updateViews.setImageViewResource(R.id.phoneState, R.drawable.phone_state_vibrate);
+                    audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                    break;
+
+                case AudioManager.RINGER_MODE_VIBRATE:
+                    updateViews.setImageViewResource(R.id.phoneState, R.mipmap.ic_launcher);
+                    audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                    break;
+
+                case AudioManager.RINGER_MODE_SILENT:
+                    updateViews.setImageViewResource(R.id.phoneState, R.drawable.phone_state_normal);
+                    audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
             }
+
             Intent i = new Intent(this, AppWidget.class);
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
             updateViews.setOnClickPendingIntent(R.id.phoneState, pi);

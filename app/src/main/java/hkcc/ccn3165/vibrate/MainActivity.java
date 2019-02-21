@@ -1,4 +1,4 @@
-package hkcc.ccn3165.vibratemode;
+package hkcc.ccn3165.vibrate;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
@@ -21,6 +21,9 @@ public class MainActivity extends Activity {
         checkIfPhoneIsVibrate();
         setButtonClickListener();
         Log.d("VibrateModeApp", "This is a test");
+
+        Log.i("VibrateModeApp", "audioManager.getRingerMode() " + mAudioManager.getRingerMode());
+        System.out.println("audioManager.getRingerMode() " + mAudioManager.getRingerMode());
     }
 
     private void setButtonClickListener() {
